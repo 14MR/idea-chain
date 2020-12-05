@@ -11,7 +11,7 @@ extern crate patent_app;
 use self::patent_app::*;
 use self::models::*;
 use self::diesel::prelude::*;
-use patent_app::models::User;
+use patent_app::schema::*;
 use rocket::response::content;
 
 #[get("/")]
@@ -24,9 +24,7 @@ fn index() -> content::Json<String> {
         .load::<User>(&connection)
         .expect("Error loading users");
 
-    let response = format!("{}{}{}", "{'hi': ", results[0].id.to_string(), "}");
-
-    content::Json(response)
+    content::Json(results)
 }
 
 fn main() {
