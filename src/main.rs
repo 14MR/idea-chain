@@ -1,7 +1,6 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-#[macro_use]
-extern crate rocket;
+#[macro_use] extern crate rocket;
 
 use self::establish_connection;
 
@@ -13,10 +12,42 @@ use self::schema::*;
 use ::diesel::prelude::*;
 use rocket::response::content;
 use serde_json::Error;
+use web3;
 
 #[get("/")]
 fn index() -> Option<content::Json<String>> {
     use patent_app::schema::users::dsl::*;
+
+    // let transport = web3::transports::Http::new("https://ropsten.infura.io/v3/29428009f85c4773b84275eb5bc68d57");
+    // let web3 = web3::Web3::new(transport.unwrap());
+    //
+    // println!("Calling accounts.");
+    // let mut accounts = web3.eth().accounts().then();
+    // println!("Accounts: {:?}", accounts);
+    // accounts.push("0x077CA1590D6cf5222c92151c1a965C39ce08290B".parse().unwrap());
+    //
+    // println!("Calling balance.");
+    // for account in accounts {
+    //     let balance = web3.eth().balance(account, None).poll().wait();
+    //     println!("Balance of {:?}: {}", account, balance);
+    // }
+
+    //
+    // println!("Calling accounts.");
+    // let accounts = async move {
+    //     let mut accounts = web3.eth().accounts().await.unwrap();
+    //     println!("Accounts: {:?}", accounts);
+    //     accounts.push("0x077CA1590D6cf5222c92151c1a965C39ce08290B".parse().unwrap());
+    //
+    //     println!("Calling balance.");
+    //     for account in accounts {
+    //         let balance = web3.eth().balance(account, None).await;
+    //         println!("Balance of {:?}: {}", account, balance.unwrap());
+    //     }
+    //
+    // };
+
+
 
     let connection = establish_connection();
     let results = users.filter(id.eq(1))
@@ -33,6 +64,8 @@ fn index() -> Option<content::Json<String>> {
 
 use rocket_contrib::json::Json;
 use diesel::insert_into;
+use std::borrow::Borrow;
+use web3::futures::FutureExt;
 
 #[post("/register", format = "json", data = "<user>")]
 fn register(user: Json<User>) -> Option<rocket::response::content::Json<String>> {
@@ -52,6 +85,6 @@ fn register(user: Json<User>) -> Option<rocket::response::content::Json<String>>
     }
 }
 
-fn main() {
-    rocket::ignite().mount("/", routes![index, register]).launch();
+fn rocket() -> rocket::Rocket {
+    rocket::ignite().mount("/", routes![index, register])
 }
