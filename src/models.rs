@@ -1,5 +1,9 @@
 use serde::{Serialize, Deserialize};
 
+extern crate diesel;
+
+use crate::schema::users;
+
 #[derive(Queryable, Insertable, Serialize, Deserialize)]
 pub struct User {
     pub id: i32,

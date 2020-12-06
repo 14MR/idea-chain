@@ -3,19 +3,19 @@
 #[macro_use]
 extern crate rocket;
 
-use patent_app::establish_connection;
+use self::establish_connection;
 
-extern crate diesel;
 extern crate patent_app;
 
 use self::patent_app::*;
 use self::models::*;
-use self::diesel::prelude::*;
-use patent_app::schema::*;
+use self::schema::*;
+use ::diesel::prelude::*;
 use rocket::response::content;
+use serde_json::Error;
 
 #[get("/")]
-fn index() -> content::Json<String> {
+fn index() -> Option<content::Json<String>> {
     use patent_app::schema::users::dsl::*;
 
     let connection = establish_connection();
@@ -24,7 +24,11 @@ fn index() -> content::Json<String> {
         .load::<User>(&connection)
         .expect("Error loading users");
 
-    content::Json(results)
+    let res = serde_json::to_string(&results);
+    match res {
+        Ok(res) => { Some(content::Json(res)) }
+        Err(_) => {None}
+    }
 }
 
 fn main() {
