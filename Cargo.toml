@@ -7,8 +7,9 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rocket = "0.4.6"
+rocket = { git = "https://github.com/SergioBenitez/Rocket" }
 
+web3 = "0.13.0"
 # The core APIs, including the Serialize and Deserialize traits. Always
 # required when using Serde. The "derive" feature is only required when
 # using #[derive(Serialize, Deserialize)] to make Serde work with structs
@@ -23,6 +24,6 @@ diesel = { version = "1.4.4", features = ["postgres"] }
 dotenv = "0.15.0"
 
 [dependencies.rocket_contrib]
-version = "0.4.6"
+git = "https://github.com/SergioBenitez/Rocket"
 default-features = false
 features = ["json"]
