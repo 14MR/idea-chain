@@ -13,10 +13,25 @@ use ::diesel::prelude::*;
 use rocket::response::content;
 use serde_json::Error;
 use web3;
+mod eth;
 
 #[get("/")]
-fn index() -> Option<content::Json<String>> {
+async fn index() -> Option<content::Json<String>> {
     use patent_app::schema::users::dsl::*;
+
+    let web3 = eth::init_web3();
+
+    println!("Calling accounts.");
+    let mut accounts = web3.eth().accounts().await.unwrap();
+    accounts.push("077CA1590D6cf5222c92151c1a965C39ce08290B".parse().unwrap());
+    println!("Accounts: {:?}", accounts);
+
+
+    println!("Calling balance.");
+    for account in accounts {
+        let balance = web3.eth().balance(account, None).await.unwrap();
+        println!("Balance of {:?}: {}", account, balance);
+    }
 
     // let transport = web3::transports::Http::new("https://ropsten.infura.io/v3/29428009f85c4773b84275eb5bc68d57");
     // let web3 = web3::Web3::new(transport.unwrap());
@@ -85,6 +100,7 @@ fn register(user: Json<User>) -> Option<rocket::response::content::Json<String>>
     }
 }
 
+#[launch]
 fn rocket() -> rocket::Rocket {
     rocket::ignite().mount("/", routes![index, register])
 }
