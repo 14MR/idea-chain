@@ -33,37 +33,6 @@ async fn index() -> Option<content::Json<String>> {
         println!("Balance of {:?}: {}", account, balance);
     }
 
-    // let transport = web3::transports::Http::new("https://ropsten.infura.io/v3/29428009f85c4773b84275eb5bc68d57");
-    // let web3 = web3::Web3::new(transport.unwrap());
-    //
-    // println!("Calling accounts.");
-    // let mut accounts = web3.eth().accounts().then();
-    // println!("Accounts: {:?}", accounts);
-    // accounts.push("0x077CA1590D6cf5222c92151c1a965C39ce08290B".parse().unwrap());
-    //
-    // println!("Calling balance.");
-    // for account in accounts {
-    //     let balance = web3.eth().balance(account, None).poll().wait();
-    //     println!("Balance of {:?}: {}", account, balance);
-    // }
-
-    //
-    // println!("Calling accounts.");
-    // let accounts = async move {
-    //     let mut accounts = web3.eth().accounts().await.unwrap();
-    //     println!("Accounts: {:?}", accounts);
-    //     accounts.push("0x077CA1590D6cf5222c92151c1a965C39ce08290B".parse().unwrap());
-    //
-    //     println!("Calling balance.");
-    //     for account in accounts {
-    //         let balance = web3.eth().balance(account, None).await;
-    //         println!("Balance of {:?}: {}", account, balance.unwrap());
-    //     }
-    //
-    // };
-
-
-
     let connection = establish_connection();
     let results = users.filter(id.eq(1))
         .limit(1)
