@@ -19,7 +19,8 @@
     "sass": "^1.30.0",
     "svelte": "^3.0.0",
     "svelte-materialify": "^0.3.4",
-    "svelte-preprocess": "^3.9.12"
+    "svelte-preprocess": "^3.9.12",
+    "svelte-web3": "^1.2.9"
   },
   "dependencies": {
     "sirv-cli": "^1.0.0"
