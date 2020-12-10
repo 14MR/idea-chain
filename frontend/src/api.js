@@ -1,19 +1,16 @@
+import wretch from 'wretch';
+
 async function sendSignature(message, signature) {
-
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const res = await fetch('http://localhost:8000/auth', {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: myHeaders,
-        redirect: 'follow',
-        body: JSON.stringify({
-            message,
-            signature
+    await wretch()
+        .url(
+            'http://localhost:8000/auth'
+        )
+        .content('application/json')
+        // .options({  mode: "no-cors" })
+        .post(JSON.stringify({message, signature}))
+        .badRequest(async ({response}) => {
+            console.log(await response.json());
         })
-    })
-
-    return res.json()
+        .res();
 }
 export {sendSignature};
