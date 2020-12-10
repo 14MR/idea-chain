@@ -1,3 +1,3 @@
-import { writable } from 'svelte/store';
+import { writable, readable, derived } from 'svelte-persistent-store/dist/local';
 
-export const store = writable(null); // start with no user
+export const auth = writable('auth', ''); // start with no user

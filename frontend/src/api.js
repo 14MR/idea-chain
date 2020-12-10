@@ -1,7 +1,7 @@
 import wretch from 'wretch';
-
+import {auth} from './auth';
 async function sendSignature(message, signature) {
-    await wretch()
+    let res = await wretch()
         .url(
             'http://localhost:8000/auth'
         )
@@ -11,6 +11,11 @@ async function sendSignature(message, signature) {
         .badRequest(async ({response}) => {
             console.log(await response.json());
         })
-        .res();
+        .res(async (response) => {
+            const data = await response.json()
+            console.log(data)
+            auth.set(data.token)
+        });
+
 }
 export {sendSignature};

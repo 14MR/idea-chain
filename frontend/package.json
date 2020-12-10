@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "sirv-cli": "^1.0.0",
+    "svelte-persistent-store": "^0.1.4",
     "wretch": "^1.7.4"
   }
 }

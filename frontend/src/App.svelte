@@ -3,6 +3,7 @@
 	let theme = 'dark';
 	import Menu from "./components/Menu.svelte";
 	import {sendSignature} from './api';
+	import {auth} from './auth';
 	import { ethStore, web3, selectedAccount, connected } from 'svelte-web3';
 
 	ethStore.setBrowserProvider();
@@ -16,14 +17,19 @@
 		let signature = await $web3.eth.personal.sign(message, checkAccount);
 		sendSignature(message, signature.slice(2));
 	}
+	let token = "";
+	const unsubscribe = auth.subscribe(value => {
+		token = value;
+	});
 
+	$: t = token
 
-	$: m = message
 </script>
 
 
 <MaterialApp theme="{theme}">
 	<Menu/>
+	token: {t} <hr>
 	{checkAccount} Balance:
 	{#await balance}
 		<span>waiting...</span>
