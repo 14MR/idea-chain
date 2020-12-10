@@ -68,8 +68,50 @@ fn register(user: Json<User>) -> Option<rocket::response::content::Json<String>>
         Err(_) => { None }
     }
 }
+use serde::*;
+use web3::types::{Recovery, RecoveryMessage};
+
+#[derive(Deserialize, Serialize)]
+struct Signature {
+    message: String,
+    signature: String
+}
+
+
+#[post("/auth", format = "json", data="<signature>")]
+async fn auth(signature: Json<Signature>) -> rocket::response::content::Json<String>{
+    use web3::types;
+    use hex::decode;
+    let web3 = eth::init_web3();
+
+    let res = serde_json::to_string(&signature.into_inner());
+    match res {
+        Ok(res) => {
+            let u = serde_json::from_str::<Signature>(&res).unwrap();
+            println!("{}", u.signature);
+            println!("{}", u.signature.as_bytes().len());
+
+            //let web3 = eth::init_web3();
+            let c = web3::types::Recovery::from_raw_signature(u.message, hex::decode(u.signature).unwrap());
+            match c{
+                Ok(recovery) => {
+                    let address = web3.accounts().recover(recovery).unwrap();
+                    println!("{}", address.to_string());
+                    let b = web3.eth().balance(address, None).await.unwrap();
+                    content::Json(b.to_string())
+                    // match address {
+                    //     None => {content::Json("nothing".to_string())}
+                    //     Some(address) => {content::Json(address.().to_string())}
+                    // }
+                }
+                Err(err) => {content::Json(err.to_string())}
+            }
+        }
+        Err(_) => { content::Json("{}".to_string()) }
+    }
+}
 
 #[launch]
 fn rocket() -> rocket::Rocket {
-    rocket::ignite().mount("/", routes![index, register])
+    rocket::ignite().mount("/", routes![index, register, auth])
 }
