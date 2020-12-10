@@ -79,6 +79,20 @@ struct Signature {
     signature: String
 }
 
+use serde::{Serialize, Deserialize};
+use jsonwebtoken::{encode, decode, Header, Algorithm, Validation, EncodingKey, DecodingKey};
+
+/// Our claims struct, it needs to derive `Serialize` and/or `Deserialize`
+#[derive(Debug, Serialize, Deserialize)]
+struct Claims {
+    id: i32,
+    address: String
+}
+
+#[derive(Deserialize, Serialize)]
+struct TokenResponse {
+    token: String
+}
 
 #[post("/auth", format = "json", data="<signature>")]
 async fn auth(signature: Json<Signature>) -> rocket::response::content::Json<String>{
@@ -89,22 +103,22 @@ async fn auth(signature: Json<Signature>) -> rocket::response::content::Json<Str
     let res = serde_json::to_string(&signature.into_inner());
     match res {
         Ok(res) => {
-            let u = serde_json::from_str::<Signature>(&res).unwrap();
-            println!("{}", u.signature);
-            println!("{}", u.signature.as_bytes().len());
-
-            //let web3 = eth::init_web3();
-            let c = web3::types::Recovery::from_raw_signature(u.message, hex::decode(u.signature).unwrap());
-            match c{
+            let received_signature = serde_json::from_str::<Signature>(&res).unwrap();
+            let recovery_result = web3::types::Recovery::from_raw_signature(received_signature.message, hex::decode(received_signature.signature).unwrap());
+            match recovery_result {
                 Ok(recovery) => {
                     let address = web3.accounts().recover(recovery).unwrap();
-                    println!("{}", address.to_string());
-                    let b = web3.eth().balance(address, None).await.unwrap();
-                    content::Json(b.to_string())
-                    // match address {
-                    //     None => {content::Json("nothing".to_string())}
-                    //     Some(address) => {content::Json(address.().to_string())}
-                    // }
+
+                    let my_claims = Claims {
+                        id: 12,
+                        address: address.to_string()
+                    };
+
+                    let token = encode(&Header::default(), &my_claims, &EncodingKey::from_secret("secret".as_ref())).unwrap();
+                    let token_response = TokenResponse {
+                        token
+                    };
+                    content::Json(serde_json::to_string(&token_response).unwrap())
                 }
                 Err(err) => {content::Json(err.to_string())}
             }
