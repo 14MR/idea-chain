@@ -14,6 +14,8 @@ use rocket::response::content;
 use serde_json::Error;
 use web3;
 mod eth;
+mod services;
+use self::services::user;
 
 #[get("/")]
 async fn index() -> Option<content::Json<String>> {
@@ -113,6 +115,8 @@ async fn auth(signature: Json<Signature>) -> rocket::response::content::Json<Str
                         id: 12,
                         address: address.to_string()
                     };
+
+                    services::user::create_user(hex::encode(address.as_bytes()));
 
                     let token = encode(&Header::default(), &my_claims, &EncodingKey::from_secret("secret".as_ref())).unwrap();
                     let token_response = TokenResponse {

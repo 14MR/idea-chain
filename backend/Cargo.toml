@@ -20,7 +20,7 @@ serde = { version = "1.0", features = ["derive"] }
 # but you may be using a different one.
 serde_json = "1.0"
 
-diesel = { version = "1.4.4", features = ["postgres"] }
+diesel = { version = "1.4.4", features = ["postgres", "numeric"] }
 dotenv = "0.15.0"
 
 hex = "0.3.1"
