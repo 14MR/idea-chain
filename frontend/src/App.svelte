@@ -12,9 +12,9 @@
 	$: balance = $connected ? $web3.eth.getBalance(checkAccount) : ''
 	const message = $web3.utils.sha3('test').slice(2);
 
-	function sendAuth(){
-		let signature = $connected ? $web3.eth.personal.sign(message, checkAccount) : '';
-		sendSignature(message, signature);
+	async function sendAuth(){
+		let signature = await $web3.eth.personal.sign(message, checkAccount);
+		sendSignature(message, signature.slice(2));
 	}
 
 
@@ -34,7 +34,7 @@
 	{#await connected}
 		<span>waiting...</span>
 	{:then value}
-		<button on:click={sendAuth()}>connect</button>
+		<button on:click={sendAuth}>connect</button>
 	{/await}
 </MaterialApp>
 
