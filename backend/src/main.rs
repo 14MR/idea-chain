@@ -1,6 +1,7 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-#[macro_use] extern crate rocket;
+#[macro_use]
+extern crate rocket;
 
 use self::establish_connection;
 
@@ -13,8 +14,10 @@ use ::diesel::prelude::*;
 use rocket::response::content;
 use serde_json::Error;
 use web3;
+
 mod eth;
 mod services;
+
 use self::services::user;
 
 #[get("/")]
@@ -70,6 +73,7 @@ fn register(user: Json<User>) -> Option<rocket::response::content::Json<String>>
         Err(_) => { None }
     }
 }
+
 use serde::*;
 use web3::types::{Recovery, RecoveryMessage};
 use rocket_cors::{CorsOptions, AllowedOrigins, AllowedHeaders};
@@ -78,7 +82,7 @@ use rocket::http::Method;
 #[derive(Deserialize, Serialize)]
 struct Signature {
     message: String,
-    signature: String
+    signature: String,
 }
 
 use serde::{Serialize, Deserialize};
@@ -88,16 +92,17 @@ use jsonwebtoken::{encode, decode, Header, Algorithm, Validation, EncodingKey, D
 #[derive(Debug, Serialize, Deserialize)]
 struct Claims {
     id: i32,
-    address: String
+    address: String,
 }
 
 #[derive(Deserialize, Serialize)]
 struct TokenResponse {
+    id: i32,
     token: String
 }
 
-#[post("/auth", format = "json", data="<signature>")]
-async fn auth(signature: Json<Signature>) -> rocket::response::content::Json<String>{
+#[post("/auth", format = "json", data = "<signature>")]
+async fn auth(signature: Json<Signature>) -> rocket::response::content::Json<String> {
     use web3::types;
     use hex::decode;
     let web3 = eth::init_web3();
@@ -111,20 +116,20 @@ async fn auth(signature: Json<Signature>) -> rocket::response::content::Json<Str
                 Ok(recovery) => {
                     let address = web3.accounts().recover(recovery).unwrap();
 
+
+                    let res = services::user::get_or_create_user(hex::encode(address.as_bytes())).unwrap();
                     let my_claims = Claims {
-                        id: 12,
-                        address: address.to_string()
+                        id: res,
+                        address: address.to_string(),
                     };
-
-                    services::user::create_user(hex::encode(address.as_bytes()));
-
                     let token = encode(&Header::default(), &my_claims, &EncodingKey::from_secret("secret".as_ref())).unwrap();
                     let token_response = TokenResponse {
+                        id: res,
                         token
                     };
                     content::Json(serde_json::to_string(&token_response).unwrap())
                 }
-                Err(err) => {content::Json(err.to_string())}
+                Err(err) => { content::Json(err.to_string()) }
             }
         }
         Err(_) => { content::Json("{}".to_string()) }
