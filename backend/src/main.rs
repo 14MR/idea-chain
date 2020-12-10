@@ -70,6 +70,8 @@ fn register(user: Json<User>) -> Option<rocket::response::content::Json<String>>
 }
 use serde::*;
 use web3::types::{Recovery, RecoveryMessage};
+use rocket_cors::{CorsOptions, AllowedOrigins, AllowedHeaders};
+use rocket::http::Method;
 
 #[derive(Deserialize, Serialize)]
 struct Signature {
@@ -113,5 +115,17 @@ async fn auth(signature: Json<Signature>) -> rocket::response::content::Json<Str
 
 #[launch]
 fn rocket() -> rocket::Rocket {
-    rocket::ignite().mount("/", routes![index, register, auth])
+    let allowed_origins = AllowedOrigins::all();
+
+    // You can also deserialize this
+    let cors = rocket_cors::CorsOptions {
+        allowed_origins,
+        allowed_headers: AllowedHeaders::all(),
+        allow_credentials: true,
+        ..Default::default()
+    }
+        .to_cors().unwrap();
+
+
+    rocket::ignite().attach(cors).mount("/", routes![index, register, auth])
 }
