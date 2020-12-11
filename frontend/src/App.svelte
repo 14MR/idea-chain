@@ -7,7 +7,7 @@
     import {sendSignature} from './api';
     import {auth} from './auth';
     import {ethStore, web3, selectedAccount, connected} from 'svelte-web3';
-    import ContractList from "./components/ContractList.svelte";
+    import PatentList from "./components/PatentList.svelte";
     import Content from "./components/Content.svelte";
 
     ethStore.setBrowserProvider();

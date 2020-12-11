@@ -1,6 +1,6 @@
 <script>
     import {Tabs, Tab, Window, WindowItem, AppBar} from 'svelte-materialify/src';
-    import ContractList from "./ContractList.svelte";
+    import PatentList from "./PatentList.svelte";
 
     let value = 0;
 </script>
@@ -21,11 +21,11 @@
     <WindowItem>
         <h4>All patents</h4>
         <div>
-            <ContractList/>
+            <PatentList/>
         </div>
     </WindowItem>
     <WindowItem>
         <h4>My patents</h4>
-        <ContractList/>
+        <PatentList/>
     </WindowItem>
 </Window>
