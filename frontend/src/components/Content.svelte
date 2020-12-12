@@ -1,21 +1,7 @@
 <script>
-    import {
-        AppBar,
-        Button,
-        Card,
-        CardActions,
-        CardText,
-        CardTitle,
-        Dialog,
-        Tab,
-        Tabs,
-        Window,
-        WindowItem
-    } from 'svelte-materialify/src';
+    import {AppBar, Tab, Tabs, Window, WindowItem} from 'svelte-materialify/src';
     import PatentList from "./PatentList.svelte";
-    import Icon from 'svelte-materialify/src/components/Icon';
-    import {mdiPlus} from '@mdi/js';
-    import AddPatentForm from "./AddPatentForm.svelte";
+    import AddBtn from "./AddBtn.svelte";
 
     let value = 0;
     let active = true;
@@ -51,19 +37,4 @@
     </Window>
 </div>
 
-<!--add button -->
-<Button id="add-btn" fab size="default" class="blue white-text" on:click={handleClick}>
-    <Icon path={mdiPlus}/>
-</Button>
-<Dialog persistent bind:active>
-    <Card>
-        <CardTitle>Add a contract</CardTitle>
-        <CardText>
-            <AddPatentForm></AddPatentForm>
-        </CardText>
-        <CardActions>
-            <Button on:click={handleClick} text>Cancel</Button>
-            <Button on:click={handleClick} text class="red-text">Save</Button>
-        </CardActions>
-    </Card>
-</Dialog>
+<AddBtn/>
