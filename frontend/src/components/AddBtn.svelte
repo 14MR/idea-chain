@@ -253,6 +253,7 @@
     };
 
     const handleSubmit = () => {
+        active = !active;
         contract.methods.addPatent(patent_data).send({
             from: eth.account
         }).then(
@@ -342,9 +343,5 @@
                 </Col>
             </form>
         </CardText>
-        <CardActions>
-            <Button on:click={handleClick} text>Cancel</Button>
-            <Button on:click={handleClick} text class="red-text">Save</Button>
-        </CardActions>
     </Card>
 </Dialog>
