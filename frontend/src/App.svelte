@@ -54,15 +54,20 @@
 
 
     function getPatents() {
-        let contract = new $web3.eth.Contract(abi, '0xf8caa56A044b46f13655B2a07BbbCf1c94334981')
+        let contract = new $web3.eth.Contract(abi, '0xE87dbc35C7c4A446610bBa0F13b1a7eEf48a4117')
         contract.methods.contract_id().call().then(
             async el => {
                 console.log("el", el)
                 for (let i = 0; i <= el; i++) {
                     await contract.methods.getPatent(i).call().then(
                         c => {
-                            eth.update(e => {e.patents.push(c); return e});
-                            console.log(eth.patents)
+                            console.log("before", c)
+                            eth.update(e => {
+                                e.patents[parseInt(c.id)] = c;
+                                console.log(e.patents);
+                                return e
+                            });
+
                         }
                     )
                 }

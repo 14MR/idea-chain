@@ -11,7 +11,7 @@
     let value = 0;
     let active = false;
 
-    let contract = new $web3.eth.Contract(abi, '0xf8caa56A044b46f13655B2a07BbbCf1c94334981')
+    let contract = new $web3.eth.Contract(abi, '0xE87dbc35C7c4A446610bBa0F13b1a7eEf48a4117')
     let patent_data = {
         id: 123,
         owner: '0x077CA1590D6cf5222c92151c1a965C39ce08290B',
@@ -38,9 +38,6 @@
         }).then(
             val => {
                 console.log(val)
-                contract.methods.getPatent(0).call().then(
-                    val => console.log(val)
-                )
             }
         );
     };
@@ -63,57 +60,57 @@
             <form on:submit|preventDefault={handleSubmit}>
                 <Col>
                     <Row>
-                        <TextField clearable counter={100} {rules} value={patent_data.inventor_name}>inventor name
+                        <TextField clearable counter={100} {rules} bind:value={patent_data.inventor_name}>inventor name
                         </TextField>
                     </Row>
                     <Row>
-                        <TextField clearable counter={100} {rules} value={patent_data.applicant_name}>applicant name
+                        <TextField clearable counter={100} {rules} bind:value={patent_data.applicant_name}>applicant name
                         </TextField>
                     </Row>
                     <Row>
-                        <TextField clearable counter={100} {rules} value={patent_data.agent_name}>agent name</TextField>
+                        <TextField clearable counter={100} {rules} bind:value={patent_data.agent_name}>agent name</TextField>
                     </Row>
                     <Row>
-                        <TextField clearable counter={100} {rules} value={patent_data.state}>state</TextField>
+                        <TextField clearable counter={100} {rules} bind:value={patent_data.state}>state</TextField>
                     </Row>
                     <Row>
-                        <TextField clearable counter={100} {rules} value={patent_data._address}>address</TextField>
+                        <TextField clearable counter={100} {rules} bind:value={patent_data._address}>address</TextField>
                     </Row>
                     <Row>
-                        <TextField clearable counter={100} {rules} value={patent_data.invention_title}>invention_title
+                        <TextField clearable counter={100} {rules} bind:value={patent_data.invention_title}>invention_title
                         </TextField>
                     </Row>
                     <Row>
-                        <TextField clearable counter={100} {rules} value={patent_data.link}>link</TextField>
+                        <TextField clearable counter={100} {rules} bind:value={patent_data.link}>link</TextField>
                     </Row>
                     <Row>
-                        <TextField clearable counter={100} {rules} value={patent_data.country}>country</TextField>
+                        <TextField clearable counter={100} {rules} bind:value={patent_data.country}>country</TextField>
                     </Row>
                     <Row>
-                        <TextField clearable counter={100} {rules} value={patent_data.patent_number_in_country}>
+                        <TextField clearable counter={100} {rules} bind:value={patent_data.patent_number_in_country}>
                             patent number in country
                         </TextField>
                     </Row>
                     <Row>
-                        <TextField clearable counter={100} {rules} value={patent_data.decision_number}>decision number
+                        <TextField clearable counter={100} {rules} bind:value={patent_data.decision_number}>decision number
                         </TextField>
                     </Row>
                     <Row>
-                        <TextField clearable counter={100} {rules} value={patent_data.decision_date}>decision date
+                        <TextField clearable counter={100} {rules} bind:value={patent_data.decision_date}>decision date
                         </TextField>
                     </Row>
                     <Row>
-                        <TextField clearable counter={100} {rules} value={patent_data.law_number}>law number</TextField>
+                        <TextField clearable counter={100} {rules} bind:value={patent_data.law_number}>law number</TextField>
                     </Row>
                     <Row>
                         <TextField clearable counter={100} {rules}
-                                   value={patent_data.internation_classification_number}>
+                                   bind:value={patent_data.internation_classification_number}>
                             internation classification number
                         </TextField>
                     </Row>
 
                     <Row>
-                        <TextField clearable counter={100} {rules} value={patent_data.person_responsible_in_country}>
+                        <TextField clearable counter={100} {rules} bind:value={patent_data.person_responsible_in_country}>
                             person responsible in country
                         </TextField>
                     </Row>
