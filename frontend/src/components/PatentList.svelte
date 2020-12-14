@@ -2,27 +2,18 @@
     import ExpansionPanels, {
         ExpansionPanel,
     } from 'svelte-materialify/src/components/ExpansionPanels';
+    import {eth} from '../eth.js';
 
-    let patents = [
-        {
-            'title': "Some title",
-            "description": "some desc"
-        }
-    ]
-
-    let value = [1];
     let about = {index: '', active: ''};
 
-    function onChange(e) {
-        about = e.detail;
-    }
+
 </script>
 
-<ExpansionPanels on:change={onChange} bind:value>
-    {#each patents as patent}
+<ExpansionPanels>
+    {#each eth.patents as patent}
         <ExpansionPanel>
-            <span slot="header">{patent.title}</span>
-            {patent.description}
+            <span slot="header">{patent.agent_name}</span>
+            {patent.owner}
         </ExpansionPanel>
     {/each}
 </ExpansionPanels>

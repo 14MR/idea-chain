@@ -10,6 +10,7 @@
     import {ethStore, web3, selectedAccount, connected} from 'svelte-web3';
     import PatentList from "./components/PatentList.svelte";
     import Content from "./components/Content.svelte";
+    import {abi} from "./abi.js";
 
     ethStore.setBrowserProvider();
 
@@ -25,8 +26,10 @@
 
     $: smart_contract_interface = $connected ? getAccounts((result) => {
             eth.account = result[0];
+            eth.patents = [];
             console.log(result[0]);
             console.log("smart contract")
+            getPatents();
 
         })
         :
@@ -49,6 +52,29 @@
 
     $: t = token
 
+
+    function getPatents() {
+        let contract = new $web3.eth.Contract(abi, '0xf8caa56A044b46f13655B2a07BbbCf1c94334981')
+        contract.methods.contract_id().call().then(
+            async el => {
+                console.log("el", el)
+                for (let i = 0; i <= el; i++) {
+                    await contract.methods.getPatent(i).call().then(
+                        c => {
+                            eth.patents.push(c);
+                            console.log(eth.patents)
+                        }
+                    )
+                }
+
+
+            }
+        )
+
+    }
+
+    $: patents_view = $connected ? eth.patents : []
+
 </script>
 
 
@@ -58,22 +84,16 @@
         <Row>
             <Col>
                 {#if !$connected}
-                    <span>loading...</span>
-                {:else}
+                    <span>waiting...</span>
+                {:else if eth.patents}
                     <Content/>
+
                 {/if}
             </Col>
         </Row>
     </Container>
-    token: {t}
     <hr>
     {checkAccount}
-    <!--    Balance:-->
-    <!--{#await balance}-->
-    <!--    <span>waiting...</span>-->
-    <!--{:then value}-->
-    <!--    <span>{value}</span>-->
-    <!--{/await}-->
 
     {#await connected}
         <span>waiting...</span>
