@@ -61,7 +61,7 @@
                 for (let i = 0; i <= el; i++) {
                     await contract.methods.getPatent(i).call().then(
                         c => {
-                            eth.patents.push(c);
+                            eth.update(e => {e.patents.push(c); return e});
                             console.log(eth.patents)
                         }
                     )
