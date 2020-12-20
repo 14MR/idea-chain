@@ -1,8 +1,19 @@
 <script>
     import {mdiMenu, mdiViewDashboard, mdiAccountBox, mdiLogin, mdiLogout} from '@mdi/js';
     import {AppBar, Button, Icon, List, ListItem, NavigationDrawer, Overlay,} from 'svelte-materialify/src';
+    import {connected, web3} from "svelte-web3";
+    import {sendSignature} from "../api";
+    import {eth} from "../eth";
 
     let active = false;
+
+    $: checkAccount = $connected ? eth.account : '';
+    const message = $web3.utils.sha3('test').slice(2);
+
+    async function sendAuth() {
+        let signature = await $web3.eth.personal.sign(message, checkAccount);
+        sendSignature(message, signature.slice(2));
+    }
 
     function toggleNavigation() {
         active = !active;
@@ -32,7 +43,7 @@
         </span>
                 Account
             </ListItem>
-            <ListItem>
+            <ListItem on:click={sendAuth}>
         <span slot="prepend">
           <Icon path={mdiLogin}/>
         </span>

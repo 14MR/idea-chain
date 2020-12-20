@@ -6,16 +6,36 @@
     import {Container, Row, Col} from 'svelte-materialify/src';
     import {sendSignature} from './api';
     import {auth} from './auth';
+    import {eth} from './eth';
     import {ethStore, web3, selectedAccount, connected} from 'svelte-web3';
     import PatentList from "./components/PatentList.svelte";
     import Content from "./components/Content.svelte";
+    import {abi} from "./abi.js";
 
     ethStore.setBrowserProvider();
 
+    function getAccounts(callback) {
+        $web3.eth.getAccounts((error, result) => {
+            if (error) {
+                console.log(error);
+            } else {
+                callback(result);
+            }
+        });
+    }
+
+    $: smart_contract_interface = $connected ? getAccounts((result) => {
+            eth.account = result[0];
+            eth.patents = [];
+            console.log(result[0]);
+            console.log("smart contract")
+            getPatents();
+
+        })
+        :
+        ''
+
     const enableBrowser = () => ethStore.setBrowserProvider()
-    $: checkAccount = '0x077CA1590D6cf5222c92151c1a965C39ce08290B'
-    $: balance = $connected ? $web3.eth.getBalance(checkAccount) : ''
-    const message = $web3.utils.sha3('test').slice(2);
 
     async function sendAuth() {
         let signature = await $web3.eth.personal.sign(message, checkAccount);
@@ -29,6 +49,34 @@
 
     $: t = token
 
+
+    function getPatents() {
+        let contract = new $web3.eth.Contract(abi, '0xE87dbc35C7c4A446610bBa0F13b1a7eEf48a4117')
+        contract.methods.contract_id().call().then(
+            async el => {
+                console.log("el", el)
+                for (let i = 0; i <= el; i++) {
+                    await contract.methods.getPatent(i).call().then(
+                        c => {
+                            console.log("before", c)
+                            eth.update(e => {
+                                e.patents[parseInt(c.id)] = c;
+                                console.log(e.patents);
+                                return e
+                            });
+
+                        }
+                    )
+                }
+
+
+            }
+        )
+
+    }
+
+    $: patents_view = $connected ? eth.patents : []
+
 </script>
 
 
@@ -37,24 +85,15 @@
     <Container>
         <Row>
             <Col>
-                <Content/>
+                {#if !$connected}
+                    <span>waiting...</span>
+                {:else if eth.patents}
+                    <Content/>
+
+                {/if}
             </Col>
         </Row>
     </Container>
-    token: {t}
-    <hr>
-    {checkAccount} Balance:
-    {#await balance}
-        <span>waiting...</span>
-    {:then value}
-        <span>{value}</span>
-    {/await}
-
-    {#await connected}
-        <span>waiting...</span>
-    {:then value}
-        <button on:click={sendAuth}>connect</button>
-    {/await}
 </MaterialApp>
 
 <style>
