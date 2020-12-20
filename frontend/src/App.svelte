@@ -36,9 +36,6 @@
         ''
 
     const enableBrowser = () => ethStore.setBrowserProvider()
-    $: checkAccount = $connected ? eth.account : '';
-    // $: balance = $connected ? $web3.eth.getBalance(checkAccount) : ''
-    const message = $web3.utils.sha3('test').slice(2);
 
     async function sendAuth() {
         let signature = await $web3.eth.personal.sign(message, checkAccount);
@@ -97,14 +94,6 @@
             </Col>
         </Row>
     </Container>
-    <hr>
-    {checkAccount}
-
-    {#await connected}
-        <span>waiting...</span>
-    {:then value}
-        <button on:click={sendAuth}>connect</button>
-    {/await}
 </MaterialApp>
 
 <style>
